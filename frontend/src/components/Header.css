@@ -1,0 +1,46 @@
+.header {
+    background-color: #222;
+    color: white;
+    padding: 5px 0;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    width: 100%;
+    font-size: 11px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+
+.header h1 {
+  margin-bottom: 10px;
+}
+
+.header nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.header nav ul li {
+  display: inline;
+}
+
+.header nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+}
+
+.header nav ul li a:hover {
+  text-decoration: underline;
+}
+
+main {
+  margin-top: 100px; /* Space for the fixed header */
+  padding: 20px;
+  flex-grow: 1;
+  text-align: center;
+}

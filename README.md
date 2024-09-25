@@ -32,3 +32,12 @@ pip install transformers torch
 
 frontend
 npm install axios
+
+login and register pages
+backend
+npm install express mongoose bcrypt jsonwebtoken dotenv cors
+
+user.js
+frontend 
+npm install axios
+
