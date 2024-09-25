@@ -1,15 +1,59 @@
-import React, { useState } from 'react'; 
-import './AuthPage.css'; // For the CSS styles
+import React, { useState } from 'react';
+import './AuthPage.css';
 import Header from './Header';
 import Footer from './Footer';
 
 const AuthPage = () => {
-  // State to track the active panel
+  // State to track the active panel and form data
   const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState(''); // Only for sign-up
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   // Toggle between sign-up and sign-in panels
   const togglePanel = () => {
     setIsSignUp(!isSignUp);
+    setError('');
+    setSuccess('');
+  };
+
+  // Handle form submission for sign-up and sign-in
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await fetch(`http://localhost:5000/auth/${isSignUp ? 'signup' : 'login'}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          ...(isSignUp && { name }), // Send name only in sign-up
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      // If login/signup is successful, store the token
+      if (data.token) {
+        localStorage.setItem('token', data.token); // Store the JWT token
+        setSuccess(`Successfully ${isSignUp ? 'signed up' : 'logged in'}!`);
+      } else {
+        setError('Failed to retrieve token.');
+      }
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -17,23 +61,44 @@ const AuthPage = () => {
       <Header />
       <div className={`container ${isSignUp ? 'right-panel-active' : ''}`} id="container">
         <div className="form-container sign-up-container">
-          <form action="#">
+          <form onSubmit={handleSubmit}>
             <h1>Create Account</h1>
             <div className="social-container">
-              <a href="#" className="social"><i className="fab fa-facebook-f"></i></a>
-              <a href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
-              <a href="#" className="social"><i className="fab fa-linkedin-in"></i></a>
+            <a href="/auth/google" className="social"><i className="fab fa-google-plus-g"></i></a>
+            <a href="/auth/facebook" className="social"><i className="fab fa-facebook-f"></i></a>
+            <a href="/auth/linkedin" className="social"><i className="fab fa-linkedin-in"></i></a>
+
             </div>
             <span>or use your email for registration</span>
-            <input type="text" placeholder="Name" />
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <button type="submit">Sign Up</button>
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required={isSignUp}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type="submit">{isSignUp ? 'Sign Up' : 'Sign In'}</button>
+            {error && <p className="error">{error}</p>}
+            {success && <p className="success">{success}</p>}
           </form>
         </div>
 
         <div className="form-container sign-in-container">
-          <form action="#">
+          <form onSubmit={handleSubmit}>
             <h1>Sign in</h1>
             <div className="social-container">
               <a href="#" className="social"><i className="fab fa-facebook-f"></i></a>
@@ -41,10 +106,24 @@ const AuthPage = () => {
               <a href="#" className="social"><i className="fab fa-linkedin-in"></i></a>
             </div>
             <span>or use your account</span>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
             <a href="#">Forgot your password?</a>
             <button type="submit">Sign In</button>
+            {error && <p className="error">{error}</p>}
+            {success && <p className="success">{success}</p>}
           </form>
         </div>
 
