@@ -44,10 +44,13 @@ const AuthPage = () => {
         throw new Error(data.message || 'Something went wrong');
       }
 
-      // If login/signup is successful, store the token
+      // If login/signup is successful, store the token and redirect to home page
       if (data.token) {
         localStorage.setItem('token', data.token); // Store the JWT token
         setSuccess(`Successfully ${isSignUp ? 'signed up' : 'logged in'}!`);
+
+        // Redirect to the home page after successful login/signup
+        window.location.href = '/home';  // Redirect to home page
       } else {
         setError('Failed to retrieve token.');
       }
@@ -60,14 +63,14 @@ const AuthPage = () => {
     <div>
       <Header />
       <div className={`container ${isSignUp ? 'right-panel-active' : ''}`} id="container">
+        {/* Sign-up Form */}
         <div className="form-container sign-up-container">
           <form onSubmit={handleSubmit}>
             <h1>Create Account</h1>
             <div className="social-container">
-            <a href="/auth/google" className="social"><i className="fab fa-google-plus-g"></i></a>
-            <a href="/auth/facebook" className="social"><i className="fab fa-facebook-f"></i></a>
-            <a href="/auth/linkedin" className="social"><i className="fab fa-linkedin-in"></i></a>
-
+              <a href="http://localhost:5000/auth/google" className="social"><i className="fab fa-google-plus-g"></i></a>
+              <a href="http://localhost:5000/auth/facebook" className="social"><i className="fab fa-facebook-f"></i></a>
+              <a href="http://localhost:5000/auth/linkedin" className="social"><i className="fab fa-linkedin-in"></i></a>
             </div>
             <span>or use your email for registration</span>
             <input
@@ -91,19 +94,20 @@ const AuthPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <button type="submit">{isSignUp ? 'Sign Up' : 'Sign In'}</button>
+            <button type="submit">Sign Up</button>
             {error && <p className="error">{error}</p>}
             {success && <p className="success">{success}</p>}
           </form>
         </div>
 
+        {/* Sign-in Form */}
         <div className="form-container sign-in-container">
           <form onSubmit={handleSubmit}>
             <h1>Sign in</h1>
             <div className="social-container">
-              <a href="#" className="social"><i className="fab fa-facebook-f"></i></a>
-              <a href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
-              <a href="#" className="social"><i className="fab fa-linkedin-in"></i></a>
+              <a href="http://localhost:5000/auth/google" className="social"><i className="fab fa-google-plus-g"></i></a>
+              <a href="http://localhost:5000/auth/facebook" className="social"><i className="fab fa-facebook-f"></i></a>
+              <a href="http://localhost:5000/auth/linkedin" className="social"><i className="fab fa-linkedin-in"></i></a>
             </div>
             <span>or use your account</span>
             <input
@@ -127,6 +131,7 @@ const AuthPage = () => {
           </form>
         </div>
 
+        {/* Overlay Section */}
         <div className="overlay-container">
           <div className="overlay">
             <div className="overlay-panel overlay-left">

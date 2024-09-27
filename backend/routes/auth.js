@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Assuming this is your User model
+const User = require('../models/User'); // User model
 const router = express.Router();
 
 // Passport Strategies for Google, Facebook, LinkedIn
@@ -108,7 +108,7 @@ router.get('/linkedin/callback', passport.authenticate('linkedin', { failureRedi
   res.redirect(`/dashboard?token=${token}`);
 });
 
-// Login route
+// Login route (JWT Authentication)
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -127,7 +127,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Sign Up route
+// Sign Up route (JWT Authentication)
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -151,6 +151,7 @@ router.post('/signup', async (req, res) => {
 // Middleware to verify token
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
+
   const token = authHeader && authHeader.split(' ')[1]; // Expecting 'Bearer <token>'
 
   if (!token) {
@@ -171,7 +172,7 @@ router.get('/protected', verifyToken, (req, res) => {
   res.json({ message: 'This is a protected route accessible only with a valid token.' });
 });
 
-// Profile route
+// Profile route (for authenticated users)
 router.get('/profile', verifyToken, (req, res) => {
   res.json({ user: req.user });
 });
